@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Add to Cart assets frontend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/website_add_remove_to_cart_ajax/static/src/js/add_to_cart.js"/>
+            </xpath>
+        </template>
+
+        <template id="add_to_cart" inherit_id="website_sale.products_item" customize_show="True"
+                  name="Quick Qty Add to Cart(Ajax)"
+                  priority="20">
+            <xpath expr="//form" position="attributes">
+                <attribute name="t-att-id">'pro'+str(product._get_first_possible_variant_id())</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_wsale_product_btn')]" position="inside">
+                <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
+                <t t-set="product_variant_ids" t-value="product.product_variant_ids"/>
+                <t t-set="qty_in_line" t-value="website.check_in_line(product_variant_id)"/>
+                <div>
+                    <div class="text-center td-qty">
+                        <button t-attf-class="btn btn-primary o_add_cart_ajax add_init #{'d-none' if qty_in_line else ''}"
+                                type="button" role="button"
+                                t-att-data-product-template-id="product.id"
+                                t-att-data-product-product-id="product_variant_id"
+                                data-action="o_wishlist">
+                            Add to Cart
+                        </button>
+                        <div t-attf-class="css_quantity input-group mx-auto input_block oe_cart #{'d-none' if not qty_in_line else ''}">
+                            <div class="input-group-prepend" style="width: 100%;justify-content: center;">
+                                <a t-attf-href="#"
+                                   style="width: 100%; margin-left: 5px; margin-right: 5px;"
+                                   class="btn btn-primary js_add_cart_json d-inline-block o_add_cart_ajax "
+                                   aria-label="Remove one" title="Remove one">
+                                    <i class="fa fa-minus"/>
+                                </a>
+                            </div>
+                            <input type="text" class="js_quantity form-control quantity input-qty"
+                                   t-att-value="qty_in_line" style="max-width: 4em;"
+                                   t-att-data-product-id="product_variant_id" data-min="0"/>
+                            <div class="input-group-append" style="    width: 100%;justify-content: center;">
+                                <a t-attf-href="#" style="width: 100%; margin-left: 5px;  margin-right: 5px;"
+                                   class="btn float_left js_add_cart_json d-inline-block o_add_cart_ajax btn-primary"
+                                   aria-label="Add one" title="Add one">
+                                    <i class="fa fa-plus"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
